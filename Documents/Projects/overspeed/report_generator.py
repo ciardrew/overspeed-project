@@ -2,7 +2,7 @@ import pandas as pd
 import xlsxwriter
 
 
-def xlsx_create(df, output_path, output_filename, df_logic, report_period):
+def xlsx_create(df, df_logic, output_path, output_filename, report_period, extreme_overspeed):
     """Create an Excel file from the DataFrame."""
     with pd.ExcelWriter(output_path, engine='xlsxwriter') as writer:
         df.to_excel(writer, sheet_name=output_filename, index=False, startrow=3)
@@ -12,6 +12,7 @@ def xlsx_create(df, output_path, output_filename, df_logic, report_period):
         yellow_format = writer.book.add_format({'bg_color': 'yellow'})
         orange_format = writer.book.add_format({'bg_color': '#FFC000', 'bold': True})
         emp_format = writer.book.add_format({'bg_color': '#C8E7CA'})
+        emp_format_dark = writer.book.add_format({'bg_color': "#C0DBC2"})
         block_formats = [
             writer.book.add_format({'bg_color': "#FFFFFF"}),
             writer.book.add_format({'bg_color': "#E9E9E9"})
@@ -29,6 +30,7 @@ def xlsx_create(df, output_path, output_filename, df_logic, report_period):
         for col_num, col_name in enumerate(df.columns):
             working_sheet.write(3, col_num, col_name, orange_format)
 
+        # set column widths based on contents 
         for index, col in enumerate(df):
             column_len = max(df[col].astype(str).map(len).max(), len(col)) + 2
             working_sheet.set_column(index, index, column_len)
@@ -50,13 +52,17 @@ def xlsx_create(df, output_path, output_filename, df_logic, report_period):
                 if col_num == dt_col and pd.notna(value): # if datetime is not null (NaT - not a time)
                     working_sheet.write_datetime(row_num, col_num, value, d_fmt)
                 else:
-                    if col_num == emp_col and value.isnumeric():
-                        working_sheet.write(row_num, col_num, value, emp_format)
-                    else:
-                        working_sheet.write(row_num, col_num, value, b_fmt)
+                    if pd.notna(value):
+                        if col_num == emp_col and value.isnumeric():
+                            if d_fmt == date_formats[0]: # keep with alternating block colours
+                                working_sheet.write(row_num, col_num, value, emp_format)
+                            else:
+                                working_sheet.write(row_num, col_num, value, emp_format_dark)
+                        else:
+                            working_sheet.write(row_num, col_num, value, b_fmt)
 
         # Apply yellow cell colour to extreme overspeed events
         overspeed_col = df.columns.get_loc("Overspeed")
         for row_num, value in enumerate(df["Overspeed"], start=4): 
-            if value >= 50: # Extreme overspeed event - NEED EXTREME OVERSPEED FILTER
+            if value >= extreme_overspeed: # Extreme overspeed event
                 working_sheet.write(row_num, overspeed_col, value, yellow_format)

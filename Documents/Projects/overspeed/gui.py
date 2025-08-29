@@ -6,14 +6,15 @@ class OverspeedApp:
     def __init__(self, root):
         self.root = root
         root.title("Overspeed Report GUI")
-        root.geometry("600x450")
+        root.geometry("600x600")
 
         # Define instance variables for user input
         self.path_to_csv = ''
         self.output_path = ''
         self.output_filename = 'overspeed_report'
         self.overspeed_limit = 40
-        self.consecutive_time_period = 13
+        self.extreme_overspeed = 50
+        self.time_period = 13
         self.create_widgets()
 
     def create_widgets(self):
@@ -107,33 +108,94 @@ class OverspeedApp:
 
         # Divider line
         divider2 = tk.Frame(self.root, height=2, bg='#CCCCCC')
-        divider2.pack(fill='x', pady=10)
+        divider2.pack(fill='x', pady=5)
 
         ##################################################
 
-        # Filter Frame
+        # Filter Section Title
+        filter_section_frame = tk.Frame(self.root, bg='#F0F0F0', height=30)
+        filter_section_frame.pack(fill='x', pady=10)
+        filter_section_label = tk.Label(filter_section_frame, text="Filters", font=("Arial", 14), bg='#F0F0F0')
+        filter_section_label.pack(side='left', padx=10)
 
-        filter_frame = tk.Frame(self.root, bg='#F0F0F0', height=50)
-        filter_frame.pack(fill='x')
+        ##################################################
 
-        filter_label = tk.Label(filter_frame, text="Overspeed Limit to Check:", font=("Arial", 12), bg='#F0F0F0')
-        filter_label.pack(side='left', padx=10)
+        # Filter Overspeed Frame
+        filter_os_frame = tk.Frame(self.root, bg='#F0F0F0', height=50)
+        filter_os_frame.pack(fill='x')
 
-        self.overspeed_limit_entry = tk.Entry(filter_frame, bg="#FFFFFF", fg='black', width=10, relief='sunken')
-        self.overspeed_limit_entry.insert(0, '40')  # Default overspeed limit
+        filter_os_label = tk.Label(filter_os_frame, text="Overspeed Limit to Check:", font=("Arial", 12), bg='#F0F0F0')
+        filter_os_label.pack(side='left', padx=10)
+
+        self.overspeed_limit_entry = tk.Entry(filter_os_frame, bg="#FFFFFF", fg='black', width=10, relief='sunken')
+        self.overspeed_limit_entry.insert(0, self.overspeed_limit)  # Default overspeed limit
         self.overspeed_limit_entry.pack(side='left', padx=5)
 
-        filter_button = tk.Button(filter_frame, text="Submit Limit", command=self.overspeed_limit_change, bg="#ECECEC", fg='black')
-        filter_button.pack(side='right', padx=13)
+        filter_os_button = tk.Button(filter_os_frame, text="Submit Limit", command=self.overspeed_limit_change, bg="#ECECEC", fg='black')
+        filter_os_button.pack(side='right', padx=13)
+
+        ##################################################
+        
+        #Frame for overspeed label
+        os_label_frame = tk.Frame(self.root, bg="#F0F0F0", height=30)
+        os_label_frame.pack(fill='x', pady=5)
+
+        self.filter_label2 = tk.Label(os_label_frame, text=f"Overspeed limit set to: {self.overspeed_limit} km/h", bg="#F0F0F0", fg='black')
+        self.filter_label2.pack(side='bottom')
 
         ##################################################
 
-        #Frame for filter label
-        filter_label_frame = tk.Frame(self.root, bg="#F0F0F0", height=30)
-        filter_label_frame.pack(fill='x', pady=5)
+        #Filter Extreme Overspeed Frame
+        filter_eos_frame = tk.Frame(self.root, bg='#F0F0F0', height=50)
+        filter_eos_frame.pack(fill='x')
 
-        self.filter_label2 = tk.Label(filter_label_frame, text=f"Overspeed limit set to: {self.overspeed_limit} km/h", bg="#F0F0F0", fg='black')
-        self.filter_label2.pack(side='bottom')
+        filter_eos_label = tk.Label(filter_eos_frame, text="Extreme Overspeed Limit:", font=("Arial", 12), bg='#F0F0F0')
+        filter_eos_label.pack(side='left', padx=10)
+
+        self.extreme_overspeed_limit_entry = tk.Entry(filter_eos_frame, bg="#FFFFFF", fg='black', width=10, relief='sunken')
+        self.extreme_overspeed_limit_entry.insert(0, self.extreme_overspeed)  # Default extreme overspeed limit
+        self.extreme_overspeed_limit_entry.pack(side='left', padx=5)
+
+        filter_eos_button = tk.Button(filter_eos_frame, text="Submit Limit", command=self.extreme_overspeed_limit_change, bg="#ECECEC", fg='black')
+        filter_eos_button.pack(side='right', padx=13)
+
+        ##################################################
+
+        #Frame for extreme overspeed label
+        eos_label_frame = tk.Frame(self.root, bg="#F0F0F0", height=30)
+        eos_label_frame.pack(fill='x', pady=5)
+
+        self.filter_label3 = tk.Label(eos_label_frame, text=f"Extreme overspeed limit set to: {self.extreme_overspeed} km/h", bg="#F0F0F0", fg='black')
+        self.filter_label3.pack(side='bottom')
+
+        ##################################################
+
+        #Filter Time Period Frame
+        filter_time_frame = tk.Frame(self.root, bg='#F0F0F0', height=50)
+        filter_time_frame.pack(fill='x')
+
+        filter_time_label = tk.Label(filter_time_frame, text="Time Between Overspeeds:", font=("Arial", 12), bg='#F0F0F0')
+        filter_time_label.pack(side='left', padx=10)
+
+        self.time_entry = tk.Entry(filter_time_frame, bg="#FFFFFF", fg='black', width=10, relief='sunken')
+        self.time_entry.insert(0, self.time_period)  # Default time period between overspeed events
+        self.time_entry.pack(side='left', padx=5)
+
+        seconds_label = tk.Label(filter_time_frame, text="seconds", font=("Arial", 10), bg='#F0F0F0')
+        seconds_label.pack(side='left')
+
+        filter_time_button = tk.Button(filter_time_frame, text="Submit Time", command=self.time_change, bg="#ECECEC", fg='black')
+        filter_time_button.pack(side='right', padx=13)
+        
+
+        ##################################################
+
+        #Frame for time period label
+        time_label_frame = tk.Frame(self.root, bg="#F0F0F0", height=30)
+        time_label_frame.pack(fill='x', pady=5)
+
+        self.filter_label4 = tk.Label(time_label_frame, text=f"Time period set to: {self.time_period} seconds", bg="#F0F0F0", fg='black')
+        self.filter_label4.pack(side='bottom')
 
         ##################################################
 
@@ -200,11 +262,28 @@ class OverspeedApp:
         else:
             print("No overspeed limit provided.")
 
+    def extreme_overspeed_limit_change(self):
+        """Function to retrieve the extreme overspeed limit from the entry field."""
+        self.extreme_overspeed = self.extreme_overspeed_limit_entry.get()
+        if self.extreme_overspeed:
+            print(f"Extreme overspeed limit set to: {self.extreme_overspeed}")
+            self.filter_label3.config(text=f"Extreme overspeed limit set to: {self.extreme_overspeed} km/h")
+        else:
+            print("No extreme overspeed limit provided.")
+
+    def time_change(self):
+        """Function to retrieve the time period for consecutive overspeed events from the entry field."""
+        self.time_period = self.time_entry.get()
+        if self.time_period:
+            print(f"Time period set to: {self.time_period}")
+            self.filter_label4.config(text=f"Time period set to: {self.time_period} seconds")
+        else:
+            print("No time period provided.")
+
     def create_report_command(self):
         """Called when the 'Create Report' button is pressed."""
         if self.path_to_csv and self.output_path:
-            # Call the data_processor, passing the instance variables as arguments
-            data_processor.process_and_generate_report(self.path_to_csv, self.output_path, self.output_filename, int(self.overspeed_limit), self.consecutive_time_period)
+            data_processor.process_and_generate_report(self.path_to_csv, self.output_path, self.output_filename, int(self.overspeed_limit), int(self.time_period), int(self.extreme_overspeed))
             messagebox.showinfo("Success", "Report created successfully!")
             self.root.destroy()
         else:
