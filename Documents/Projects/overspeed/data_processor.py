@@ -1,6 +1,7 @@
 import csv
 import pandas as pd
 import report_generator
+import shifts
 
 
 def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
@@ -14,6 +15,7 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
     display_names = []
     drivers = []
     locations = []
+    shift_colour = []
     report_period = ""
     
     with open(file_path, mode='r') as file:
@@ -48,6 +50,8 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
                 display_names.append(row[6])
                 drivers.append(row[7])
                 locations.append(row[8])
+                shift_colour.append(shifts.shift_finder(row[4])) # pass in timestamp
+                
 
     # Create DataFrame from the collected data
     df = pd.DataFrame({
@@ -59,7 +63,8 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
         "Registration": registrations,
         "Display Name": display_names,
         "Driver": drivers,
-        "Location": locations
+        "Location": locations,
+        "Shift": shift_colour
     })
     df['Date/Time'] = pd.to_datetime(df['Date/Time'], format="%d/%m/%Y %H:%M")
 
@@ -88,7 +93,7 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
 
     # sort by blockstarttime first, then rego, then date/time
     df_final = df_final.sort_values(['BlockStartTime', 'Registration', 'Date/Time'])
-    df_relevant_cols = df_final[['Speed', 'Speed Limit', 'Overspeed', 'Band', 'Date/Time', 'Registration', 'Display Name', 'Driver', 'Location']]
+    df_relevant_cols = df_final[['Speed', 'Speed Limit', 'Overspeed', 'Band', 'Date/Time', 'Registration', 'Display Name', 'Driver', 'Location', 'Shift']]
     
     return df_relevant_cols, df_final, report_period
 

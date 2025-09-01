@@ -13,9 +13,9 @@ class OverspeedApp:
         self.path_to_csv = ''
         self.output_path = ''
         self.output_filename = 'overspeed_report'
-        self.overspeed_limit = 40
-        self.extreme_overspeed = 50
-        self.time_period = 13
+        self.overspeed_limit = 40 # DEFAULT
+        self.extreme_overspeed = 50 # DEFAULT
+        self.time_period = 60 # DEFAULT
         self.create_widgets()
 
     def create_widgets(self):
