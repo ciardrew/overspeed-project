@@ -226,7 +226,7 @@ class OverspeedApp:
         help_text = tk.Text(help_window, wrap="word", yscrollcommand=scrollbar.set)
 
         input_text = """You must select a CSV file and specify an output path (save location) for a report to be created. \n \nAn Excel file will be created in the specified output path with the filename you provide.  \
-            \n \nIf an Excel file with the same name already exists in the outpath path, you must delete it first as it won't be overwritten.\n \nIf you choose to change the filename and/or the overspeed limit, you must click the 'Submit Name' and 'Submit Limit' buttons \
+            \n \nIf an Excel file with the same name already exists in the outpath path, it will be overwritten with the new report.\n \nIf you choose to change the filename and/or the overspeed limit, you must click the 'Submit Name' and 'Submit Limit' buttons \
                 respectively. \n \n"""
         help_text.insert(tk.END, input_text)
         help_text.pack(side="left", fill="both", expand=True)
