@@ -4,6 +4,7 @@ import data_processor
 
 class OverspeedApp:
     def __init__(self, root):
+        """Constructor."""
         self.root = root
         root.title("Overspeed Report GUI")
         root.geometry("600x600")
@@ -18,6 +19,7 @@ class OverspeedApp:
         self.create_widgets()
 
     def create_widgets(self):
+        """Creates all additional widgets."""
         # Title Strip
         title_frame = tk.Frame(self.root, bg='#439474', height=60)
         title_frame.pack(fill='x')
@@ -25,7 +27,7 @@ class OverspeedApp:
         title_label = tk.Label(title_frame, text="Overspeed Report Creation", font=("Arial", 18), bg='#439474', fg='white')
         title_label.pack(side='left', padx=10)
 
-        # Help Button - green colour 439474
+        # Help Button
         title_button_help = tk.Button(title_frame, text="Help", command=self.help_pressed, bg='#439474', fg='white', height=1)
         title_button_help.pack(side='right', padx=5)
 
@@ -213,6 +215,7 @@ class OverspeedApp:
         create_report_button.pack(side='bottom', pady=20)
 
     def help_pressed(self):
+        """Function to create help button window."""
         help_window = tk.Toplevel(self.root)
         help_window.title("Help Window")
         help_window.geometry("300x250")

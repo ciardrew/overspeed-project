@@ -4,10 +4,7 @@ import report_generator
 
 
 def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
-    """
-    Opens and processes the CSV file, returning a filtered DataFrame.
-    """
-    # Defining arrays for data storage
+    """Opens and processes the CSV file, returning a filtered DataFrame"""
     speeds = []
     thresholds = []
     overspeeds = []
@@ -22,22 +19,20 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
     with open(file_path, mode='r') as file:
         csvreader = csv.reader(file)
         
-        #grab report period from the second row
+        # grab report period from the second row
         for row_num, row in enumerate(csvreader):
             if row_num == 1:
                 report_period = row[0]
             elif row_num > 1:
                 break
         
-        #reset file pointer to the beginning to read data rows
+        # reset file pointer to the beginning to read data rows
         file.seek(0)
         csvreader = csv.reader(file)
-        
-        # Skip header rows
+
         for _ in range(4):
             next(csvreader)
 
-        #Iterate through rows and collect data for overspeed events
         for row in csvreader:
             speed = int(row[1])
             threshold = int(row[2])
@@ -98,10 +93,7 @@ def open_and_process_csv(file_path, overspeed_limit, consecutive_time_period):
     return df_relevant_cols, df_final, report_period
 
 def process_and_generate_report(csv_path, output_path, output_filename, overspeed_limit, consecutive_time_period, extreme_overspeed):
-    """
-    Main function to process data and call the report generation.
-    This is called by the GUI.
-    """
+    """ Main function of data_processor.py. Called by GUI and makes the call to create the report"""
     df, df_logic, report_period = open_and_process_csv(csv_path, overspeed_limit, consecutive_time_period)
     complete_path = f"{output_path}/{output_filename}.xlsx"
     
