@@ -4,7 +4,7 @@ import data_processor
 
 class OverspeedApp:
     def __init__(self, root):
-        """Constructor."""
+        """App constructor."""
         self.root = root
         root.title("Overspeed Report GUI")
         root.geometry("600x600")
@@ -13,7 +13,7 @@ class OverspeedApp:
         self.path_to_csv = ''
         self.output_path = ''
         self.output_filename = 'overspeed_report'
-        self.overspeed_limit = 40 # DEFAULT
+        self.overspeed_limit = 35 # DEFAULT
         self.extreme_overspeed = 50 # DEFAULT
         self.time_period = 60 # DEFAULT
         self.create_widgets()
