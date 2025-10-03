@@ -33,7 +33,7 @@ def xlsx_create(df, df_logic, output_path, output_filename, report_period, extre
             current_df = df_logic if sheet_colour == "overspeed" else df_logic[df_logic['Shift'].str.lower() == sheet_colour.lower()]
             
             # Add title and report period
-            working_sheet.merge_range('A1:C1', 'Canterbury Overspeed Report', orange_format)
+            working_sheet.merge_range('A1:C1', 'Overspeed Report', orange_format)
             if sheet_colour != "overspeed":
                 working_sheet.merge_range('A2:C2', str(report_period) + " - " + sheet_colour, orange_format)
             else:
