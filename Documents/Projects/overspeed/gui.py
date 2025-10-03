@@ -13,9 +13,9 @@ class OverspeedApp:
         self.path_to_csv = ''
         self.output_path = ''
         self.output_filename = 'overspeed_report'
-        self.overspeed_limit = 35 # DEFAULT
-        self.extreme_overspeed = 50 # DEFAULT
-        self.time_period = 60 # DEFAULT
+        self.overspeed_limit = 30 # DEFAULT
+        self.extreme_overspeed = 40 # DEFAULT
+        self.time_period = 1 # DEFAULT: minutes
         self.create_widgets()
 
     def create_widgets(self):
@@ -183,7 +183,7 @@ class OverspeedApp:
         self.time_entry.insert(0, self.time_period)  # Default time period between overspeed events
         self.time_entry.pack(side='left', padx=5)
 
-        seconds_label = tk.Label(filter_time_frame, text="seconds", font=("Arial", 10), bg='#F0F0F0')
+        seconds_label = tk.Label(filter_time_frame, text="minutes", font=("Arial", 10), bg='#F0F0F0')
         seconds_label.pack(side='left')
 
         filter_time_button = tk.Button(filter_time_frame, text="Submit Time", command=self.time_change, bg="#ECECEC", fg='black')
@@ -196,7 +196,7 @@ class OverspeedApp:
         time_label_frame = tk.Frame(self.root, bg="#F0F0F0", height=30)
         time_label_frame.pack(fill='x', pady=5)
 
-        self.filter_label4 = tk.Label(time_label_frame, text=f"Time period set to: {self.time_period} seconds", bg="#F0F0F0", fg='black')
+        self.filter_label4 = tk.Label(time_label_frame, text=f"Time period set to: {self.time_period} minutes", bg="#F0F0F0", fg='black')
         self.filter_label4.pack(side='bottom')
 
         ##################################################
@@ -226,8 +226,8 @@ class OverspeedApp:
         help_text = tk.Text(help_window, wrap="word", yscrollcommand=scrollbar.set)
 
         input_text = """You must select a CSV file and specify an output path (save location) for a report to be created. \n \nAn Excel file will be created in the specified output path with the filename you provide.  \
-            \n \nIf an Excel file with the same name already exists in the outpath path, it will be overwritten with the new report.\n \nIf you choose to change the filename and/or the overspeed limit, you must click the 'Submit Name' and 'Submit Limit' buttons \
-                respectively. \n \n"""
+            \n \nIf an Excel file with the same name already exists in the outpath path, it will be overwritten with the new report.\n \nIf you choose to change the filename and/or any of the filters, you must click the 'Submit' buttons to apply your change. \
+             \n \n"""
         help_text.insert(tk.END, input_text)
         help_text.pack(side="left", fill="both", expand=True)
         scrollbar.config(command=help_text.yview)
@@ -277,9 +277,12 @@ class OverspeedApp:
     def time_change(self):
         """Function to retrieve the time period for consecutive overspeed events from the entry field."""
         self.time_period = self.time_entry.get()
-        if self.time_period:
+        if self.time_period and '.' not in self.time_period:
             print(f"Time period set to: {self.time_period}")
-            self.filter_label4.config(text=f"Time period set to: {self.time_period} seconds")
+            self.filter_label4.config(text=f"Time period set to: {self.time_period} minutes")
+        elif self.time_period and '.' in self.time_period:
+            print("Minutes must be a whole number")
+            messagebox.showerror("Error", "Minute value must be a whole number.")
         else:
             print("No time period provided.")
 
